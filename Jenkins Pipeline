@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+    stages {
+        stage ("SOURCE CODE") {
+            steps {
+                git branch: 'main', url: 'https://github.com/yalamanchilivinay65-ctrl/Devops.git'
+            }
+        }
+        stage ("BUILD") {
+            steps {
+                sh "docker build -t gowrishankar:v5 ."
+            }
+        }
+        stage ("RUN") {
+            steps {
+                sh "docker run -itd --name MoviesContainer5 -p 1015:80 gowrishankar:v5"
+            }
+        }
+        
+    }
+}

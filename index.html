@@ -1,790 +1,818 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>MovieTickets - Book Movie Tickets</title>
-
+    <title>ArenaPass | Ultimate Sports Ticketing</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        darkBg: '#090d16',
+                        cardBg: '#111827',
+                        cardDark: '#1f2937'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
+        body { font-family: 'Inter', sans-serif; }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 22, 0.85);
         }
-
-        body {
-            background: #f5f5f5;
-            color: #222;
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 30%, rgba(34, 197, 94, 0.15) 0%, rgba(9, 13, 22, 0.95) 70%);
         }
-
-        /* Header */
-        header {
-            background: #e50914;
-            color: white;
-            padding: 18px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 25px;
-            font-size: 16px;
-        }
-
-        /* Hero */
-        .hero {
-            background: linear-gradient(
-                rgba(0,0,0,0.65),
-                rgba(0,0,0,0.65)
-            ),
-            url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba")
-            center/cover;
-
-            height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-        }
-
-        .hero h1 {
-            font-size: 45px;
-            margin-bottom: 10px;
-        }
-
-        .hero p {
-            font-size: 18px;
-        }
-
-        /* Main container */
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 35px auto;
-        }
-
-        .section {
-            background: white;
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
-        }
-
-        .section h2 {
-            margin-bottom: 20px;
-        }
-
-        /* Movie cards */
-        .movies {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .movie {
-            border: 2px solid #eee;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .movie:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-
-        .movie.selected {
-            border: 3px solid #e50914;
-        }
-
-        .movie img {
-            width: 100%;
-            height: 270px;
-            object-fit: cover;
-        }
-
-        .movie-info {
-            padding: 15px;
-        }
-
-        .movie-info h3 {
-            margin-bottom: 8px;
-        }
-
-        .movie-info p {
-            color: #666;
-        }
-
-        /* Select options */
-        .options {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        select {
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            font-size: 16px;
-            min-width: 200px;
-        }
-
-        /* Show times */
-        .show-times {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .time {
-            padding: 12px 20px;
-            border: 1px solid #ccc;
-            border-radius: 7px;
-            cursor: pointer;
-            background: white;
-        }
-
-        .time:hover,
-        .time.selected {
-            background: #e50914;
-            color: white;
-            border-color: #e50914;
-        }
-
-        /* Screen */
-        .screen {
-            width: 80%;
-            height: 45px;
-            margin: 10px auto 30px;
-            background: #ddd;
-            border-radius: 50%;
-            text-align: center;
-            padding: 12px;
-            color: #555;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-
-        /* Seats */
-        .seats {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .seat {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            background: #ddd;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 11px;
-        }
-
-        .seat:hover {
-            background: #aaa;
-        }
-
-        .seat.selected {
-            background: #e50914;
-            color: white;
-        }
-
-        .seat.booked {
-            background: #555;
-            cursor: not-allowed;
-        }
-
-        /* Seat legend */
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-top: 25px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .legend-box {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            background: #ddd;
-        }
-
-        .legend-box.selected {
-            background: #e50914;
-        }
-
-        .legend-box.booked {
-            background: #555;
-        }
-
-        /* Summary */
-        .summary {
-            display: flex;
-            justify-content: space-between;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .summary-details {
-            flex: 1;
-        }
-
-        .summary-details p {
-            margin-bottom: 10px;
-            font-size: 17px;
-        }
-
-        .price {
-            color: #e50914;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .book-btn {
-            background: #e50914;
-            color: white;
-            border: none;
-            padding: 15px 35px;
-            border-radius: 7px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
-        .book-btn:hover {
-            background: #c70812;
-        }
-
-        /* Footer */
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 25px;
-            margin-top: 40px;
-        }
-
-        /* Mobile */
-        @media (max-width: 600px) {
-
-            header {
-                padding: 15px 20px;
-            }
-
-            nav {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 32px;
-            }
-
-            .hero {
-                height: 250px;
-            }
-
-            .container {
-                width: 95%;
-            }
-
-            .seat {
-                width: 27px;
-                height: 27px;
-            }
-
-            .screen {
-                width: 95%;
-            }
-        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #090d16; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
     </style>
 </head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
-<body>
-
-<!-- HEADER -->
-<header>
-
-    <div class="logo">
-        🎬 MovieTickets
-    </div>
-
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">Movies</a>
-        <a href="#">Theatres</a>
-        <a href="#">My Bookings</a>
-    </nav>
-
-</header>
-
-
-<!-- HERO -->
-<section class="hero">
-
-    <div>
-        <h1>Book Your Movie Tickets</h1>
-        <p>Choose your movie, seats and show time</p>
-    </div>
-
-</section>
-
-
-<div class="container">
-
-
-    <!-- MOVIES -->
-    <div class="section">
-
-        <h2>🎬 Select Movie</h2>
-
-        <div class="movies">
-
-            <div class="movie selected" onclick="selectMovie(this, 'Avengers: Endgame')">
-
-                <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba">
-
-                <div class="movie-info">
-                    <h3>Avengers: Endgame</h3>
-                    <p>Action • 3h 2m</p>
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 transition">
+                    <i class="fa-solid fa-ticket-simple text-white text-lg"></i>
                 </div>
-
-            </div>
-
-
-            <div class="movie" onclick="selectMovie(this, 'Interstellar')">
-
-                <img src="https://images.unsplash.com/photo-1446776877081-d282a0f896e2">
-
-                <div class="movie-info">
-                    <h3>Interstellar</h3>
-                    <p>Sci-Fi • 2h 49m</p>
+                <div class="flex flex-col">
+                    <span class="text-xl font-black tracking-tight text-white">ARENA<span class="text-brand-500">PASS</span></span>
+                    <span class="text-[10px] uppercase tracking-widest text-slate-400 font-semibold">Live Sports Events</span>
                 </div>
-
-            </div>
-
-
-            <div class="movie" onclick="selectMovie(this, 'The Batman')">
-
-                <img src="https://images.unsplash.com/photo-1509347528160-9a9e33742cdb">
-
-                <div class="movie-info">
-                    <h3>The Batman</h3>
-                    <p>Action • 2h 56m</p>
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- LOCATION AND DATE -->
-    <div class="section">
-
-        <h2>📍 Select Location</h2>
-
-        <div class="options">
-
-            <select id="city">
-
-                <option value="">Select City</option>
-
-                <option>Hyderabad</option>
-                <option>Chennai</option>
-                <option>Bangalore</option>
-                <option>Mumbai</option>
-                <option>Delhi</option>
-
-            </select>
-
-
-            <select id="theatre">
-
-                <option value="">Select Theatre</option>
-
-                <option>INOX</option>
-                <option>PVR Cinemas</option>
-                <option>Cinepolis</option>
-                <option>AMB Cinemas</option>
-
-            </select>
-
-
-            <select id="date">
-
-                <option value="">Select Date</option>
-
-                <option>Today</option>
-                <option>Tomorrow</option>
-                <option>22 September</option>
-                <option>23 September</option>
-
-            </select>
-
-        </div>
-
-    </div>
-
-
-    <!-- SHOW TIME -->
-    <div class="section">
-
-        <h2>🕐 Select Show Time</h2>
-
-        <div class="show-times">
-
-            <div class="time" onclick="selectTime(this)">10:00 AM</div>
-
-            <div class="time" onclick="selectTime(this)">01:30 PM</div>
-
-            <div class="time selected" onclick="selectTime(this)">04:30 PM</div>
-
-            <div class="time" onclick="selectTime(this)">07:30 PM</div>
-
-            <div class="time" onclick="selectTime(this)">10:30 PM</div>
-
-        </div>
-
-    </div>
-
-
-    <!-- SEATS -->
-    <div class="section">
-
-        <h2>💺 Select Seats</h2>
-
-        <div class="screen">
-            SCREEN
-        </div>
-
-
-        <div class="seats">
-
-            <div class="row">
-                <div class="seat">A1</div>
-                <div class="seat">A2</div>
-                <div class="seat">A3</div>
-                <div class="seat booked">A4</div>
-                <div class="seat">A5</div>
-                <div class="seat">A6</div>
-                <div class="seat">A7</div>
-                <div class="seat">A8</div>
-            </div>
-
-
-            <div class="row">
-                <div class="seat">B1</div>
-                <div class="seat">B2</div>
-                <div class="seat booked">B3</div>
-                <div class="seat">B4</div>
-                <div class="seat">B5</div>
-                <div class="seat">B6</div>
-                <div class="seat">B7</div>
-                <div class="seat">B8</div>
-            </div>
-
-
-            <div class="row">
-                <div class="seat">C1</div>
-                <div class="seat">C2</div>
-                <div class="seat">C3</div>
-                <div class="seat">C4</div>
-                <div class="seat booked">C5</div>
-                <div class="seat">C6</div>
-                <div class="seat">C7</div>
-                <div class="seat">C8</div>
-            </div>
-
-
-            <div class="row">
-                <div class="seat">D1</div>
-                <div class="seat">D2</div>
-                <div class="seat">D3</div>
-                <div class="seat">D4</div>
-                <div class="seat">D5</div>
-                <div class="seat">D6</div>
-                <div class="seat">D7</div>
-                <div class="seat">D8</div>
-            </div>
-
-
-            <div class="row">
-                <div class="seat">E1</div>
-                <div class="seat">E2</div>
-                <div class="seat">E3</div>
-                <div class="seat">E4</div>
-                <div class="seat">E5</div>
-                <div class="seat">E6</div>
-                <div class="seat">E7</div>
-                <div class="seat">E8</div>
-            </div>
-
-        </div>
-
-
-        <div class="legend">
-
-            <div class="legend-item">
-                <div class="legend-box"></div>
-                Available
-            </div>
-
-            <div class="legend-item">
-                <div class="legend-box selected"></div>
-                Selected
-            </div>
-
-            <div class="legend-item">
-                <div class="legend-box booked"></div>
-                Booked
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- BOOKING SUMMARY -->
-    <div class="section">
-
-        <h2>🎟️ Booking Summary</h2>
-
-        <div class="summary">
-
-            <div class="summary-details">
-
-                <p>
-                    <strong>Movie:</strong>
-                    <span id="selectedMovie">Avengers: Endgame</span>
-                </p>
-
-                <p>
-                    <strong>Show:</strong>
-                    <span id="selectedTime">04:30 PM</span>
-                </p>
-
-                <p>
-                    <strong>Seats:</strong>
-                    <span id="selectedSeats">None</span>
-                </p>
-
-                <p>
-                    <strong>Tickets:</strong>
-                    <span id="ticketCount">0</span>
-                </p>
-
-            </div>
-
-
-            <div>
-
-                <p>Total Amount</p>
-
-                <div class="price">
-                    ₹<span id="totalPrice">0</span>
-                </div>
-
-                <button class="book-btn" onclick="bookTickets()">
-                    Book Tickets
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+                <a href="#events" class="hover:text-brand-400 transition">Events</a>
+                <a href="#categories" class="hover:text-brand-400 transition">Categories</a>
+                <a href="#faq" class="hover:text-brand-400 transition">FAQ</a>
+                <button onclick="openMyTickets()" class="hover:text-brand-400 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-wallet text-brand-500"></i> My Tickets (<span id="ticketCountBadge">0</span>)
                 </button>
+            </nav>
 
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-4">
+                <button onclick="openMyTickets()" class="relative p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:bg-slate-700 transition md:hidden text-slate-200">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span id="mobileTicketBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-brand-500 rounded-full text-[11px] font-bold flex items-center justify-center text-white shadow">0</span>
+                </button>
+                <div class="hidden sm:flex items-center gap-3 pl-4 border-l border-slate-800">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold">
+                        <i class="fa-solid fa-user text-brand-400"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-xs font-semibold text-white">Alex Morgan</div>
+                        <div class="text-[10px] text-brand-400 font-medium">VIP Member</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 hero-gradient overflow-hidden border-b border-slate-800/60">
+        <!-- Decorative Glows -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-brand-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold uppercase tracking-wider mb-6 animate-pulse">
+                <i class="fa-solid fa-bolt"></i> Over 500+ Live Matches Available
+            </div>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight max-w-4xl mx-auto leading-none mb-6">
+                Feel The Roar. <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-emerald-200">Book Official Seats.</span>
+            </h1>
+            <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto mb-10 font-normal">
+                Secure your tickets to the world's most electrifying sports events. Instant digital delivery with 100% buyer protection.
+            </p>
+
+            <!-- Search Bar Box -->
+            <div class="max-w-3xl mx-auto bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3 shadow-2xl backdrop-blur-md flex flex-col md:flex-row gap-3">
+                <div class="flex-1 flex items-center gap-3 px-4 py-3 bg-slate-800/60 rounded-xl border border-slate-700/40">
+                    <i class="fa-solid fa-magnifying-glass text-brand-400 text-lg"></i>
+                    <input type="text" id="searchInput" oninput="filterEvents()" placeholder="Search teams, tournaments, venues (e.g. Real Madrid, NBA, F1)..." class="w-full bg-transparent text-white placeholder-slate-400 text-sm focus:outline-none">
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="cityFilter" onchange="filterEvents()" class="bg-slate-800/80 border border-slate-700 text-slate-200 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-500 cursor-pointer">
+                        <option value="all">All Cities</option>
+                        <option value="London">London, UK</option>
+                        <option value="Madrid">Madrid, Spain</option>
+                        <option value="New York">New York, USA</option>
+                        <option value="Melbourne">Melbourne, Australia</option>
+                        <option value="Monaco">Monaco, MC</option>
+                    </select>
+                    <button onclick="filterEvents()" class="bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold px-7 py-3.5 rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-brand-500/25">
+                        <span>Search</span>
+                    </button>
+                </div>
             </div>
 
+            <!-- Quick Sport Pills -->
+            <div class="flex flex-wrap items-center justify-center gap-2.5 mt-8">
+                <span class="text-xs text-slate-400 font-medium mr-2">Trending:</span>
+                <button onclick="filterByCategory('All')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition">All Sports</button>
+                <button onclick="filterByCategory('Football')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition">⚽ Football</button>
+                <button onclick="filterByCategory('Basketball')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition">🏀 Basketball</button>
+                <button onclick="filterByCategory('Motorsport')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition">🏎️ F1 & Racing</button>
+                <button onclick="filterByCategory('Cricket')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition">🏏 Cricket</button>
+                <button onclick="filterByCategory('Tennis')" class="category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition">🎾 Tennis</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <main id="events" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-1 w-full">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <div class="text-brand-400 font-bold text-xs uppercase tracking-widest mb-1"><i class="fa-solid fa-fire text-amber-500"></i> Hot & Upcoming</div>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight">Featured Sports Events</h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-xs text-slate-400 font-medium">Sort by:</span>
+                <select id="sortBy" onchange="sortEvents()" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-brand-500">
+                    <option value="date">Date: Soonest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                </select>
+            </div>
         </div>
 
+        <!-- Events Grid -->
+        <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Event Cards will be injected here via JavaScript -->
+        </div>
+
+        <!-- Empty Search State -->
+        <div id="noResults" class="hidden text-center py-20">
+            <div class="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-400 text-2xl mb-4">
+                <i class="fa-solid fa-ghost"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">No matching events found</h3>
+            <p class="text-sm text-slate-400">Try adjusting your search query or sport filter category.</p>
+        </div>
+    </main>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="border-t border-slate-800 bg-slate-950 py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="text-brand-400 font-bold text-xs uppercase tracking-widest mb-1">Got Questions?</div>
+                <h2 class="text-3xl font-extrabold text-white tracking-tight">Frequently Asked Questions</h2>
+            </div>
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left font-semibold text-slate-200 flex items-center justify-between gap-4 focus:outline-none">
+                        <span>How are my tickets delivered after purchase?</span>
+                        <i class="fa-solid fa-chevron-down text-brand-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="px-6 pb-4 text-sm text-slate-400 hidden">
+                        All tickets on ArenaPass are instantly delivered as secure digital QR code tickets directly to your "My Tickets" wallet and registered email address. You can scan them straight from your phone at the stadium gates!
+                    </div>
+                </div>
+                <!-- FAQ Item 2 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left font-semibold text-slate-200 flex items-center justify-between gap-4 focus:outline-none">
+                        <span>Are the tickets 100% authentic and guaranteed?</span>
+                        <i class="fa-solid fa-chevron-down text-brand-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="px-6 pb-4 text-sm text-slate-400 hidden">
+                        Yes! ArenaPass partners directly with official sports clubs, authorized federations, and verified stadium partners. Every ticket comes with our 100% Buyer Guarantee for seamless entry.
+                    </div>
+                </div>
+                <!-- FAQ Item 3 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <button onclick="toggleFaq(this)" class="w-full px-6 py-4 text-left font-semibold text-slate-200 flex items-center justify-between gap-4 focus:outline-none">
+                        <span>Can I get a refund if the match schedule changes?</span>
+                        <i class="fa-solid fa-chevron-down text-brand-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="px-6 pb-4 text-sm text-slate-400 hidden">
+                        If an event is officially postponed or cancelled, your tickets remain valid for the rescheduled date. If cancelled outright without rescheduling, a full 100% refund is automatically processed.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-400 text-sm py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center text-white">
+                        <i class="fa-solid fa-ticket-simple"></i>
+                    </div>
+                    <span class="text-lg font-black tracking-tight text-white">ARENA<span class="text-brand-500">PASS</span></span>
+                </div>
+                <p class="text-xs text-slate-400">The premier destination for official sports ticketing worldwide. Experience the passion live.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4 text-xs uppercase tracking-wider">Top Sports</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="filterByCategory('Football')" class="hover:text-brand-400 transition">Premier League & Champions League</a></li>
+                    <li><a href="#" onclick="filterByCategory('Basketball')" class="hover:text-brand-400 transition">NBA Finals & Playoffs</a></li>
+                    <li><a href="#" onclick="filterByCategory('Motorsport')" class="hover:text-brand-400 transition">Formula 1 Grands Prix</a></li>
+                    <li><a href="#" onclick="filterByCategory('Cricket')" class="hover:text-brand-400 transition">T20 World Cup & IPL</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4 text-xs uppercase tracking-wider">Support & Help</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#faq" class="hover:text-brand-400 transition">Help Center & FAQ</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Buyer Guarantee</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Stadium Seating Guides</a></li>
+                    <li><a href="#" class="hover:text-brand-400 transition">Contact Customer Care</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4 text-xs uppercase tracking-wider">Newsletter</h4>
+                <p class="text-xs text-slate-400 mb-3">Get VIP presale access & exclusive match alerts directly in your inbox.</p>
+                <div class="flex gap-2">
+                    <input type="email" placeholder="Your email address" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500 flex-1">
+                    <button onclick="subscribeNewsletter()" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Join</button>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+            <p>&copy; 2026 ArenaPass Inc. All rights reserved. Designed for testing UI.</p>
+            <div class="flex gap-6 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-slate-400 transition">Privacy Policy</a>
+                <a href="#" class="hover:text-slate-400 transition">Terms of Service</a>
+                <a href="#" class="hover:text-slate-400 transition">Cookie Settings</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Seat Selection & Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div id="modalContainer" class="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <div>
+                    <span id="modalCategoryBadge" class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/30">Football</span>
+                    <h3 id="modalEventTitle" class="text-xl font-black text-white mt-1">Real Madrid vs FC Barcelona</h3>
+                </div>
+                <button onclick="closeModal()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div id="modalBody" class="p-6 space-y-6">
+                <!-- Event Meta Info -->
+                <div class="flex flex-wrap items-center gap-4 text-xs text-slate-300 bg-slate-800/50 p-4 rounded-2xl border border-slate-800">
+                    <div class="flex items-center gap-2"><i class="fa-regular fa-calendar text-brand-400"></i><span id="modalDate">May 15, 2026 • 20:00</span></div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-brand-400"></i><span id="modalVenue">Santiago Bernabéu, Madrid</span></div>
+                </div>
+
+                <!-- Step 1: Seat Tier Selection -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Select Ticket Tier & Section</label>
+                    <div class="space-y-3" id="tierOptions">
+                        <!-- Tiers injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Step 2: Quantity Picker -->
+                <div class="flex items-center justify-between p-4 bg-slate-800/40 border border-slate-800 rounded-2xl">
+                    <div>
+                        <div class="text-sm font-bold text-white">Number of Tickets</div>
+                        <div class="text-xs text-slate-400">Maximum 8 tickets per user</div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="adjustQuantity(-1)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center justify-center transition border border-slate-700"><i class="fa-solid fa-minus text-xs"></i></button>
+                        <span id="ticketQuantity" class="w-8 text-center font-black text-white text-base">1</span>
+                        <button onclick="adjustQuantity(1)" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold flex items-center justify-center transition border border-slate-700"><i class="fa-solid fa-plus text-xs"></i></button>
+                    </div>
+                </div>
+
+                <!-- Price Summary Breakdown -->
+                <div class="p-5 bg-slate-950/60 border border-slate-800 rounded-2xl space-y-2.5 text-sm">
+                    <div class="flex justify-between text-slate-400 text-xs">
+                        <span>Tier Price (<span id="summaryTierName">VIP Courtside</span>) × <span id="summaryQty">1</span></span>
+                        <span id="summaryBasePrice">$450.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-400 text-xs">
+                        <span>Service & Booking Fee (5%)</span>
+                        <span id="summaryFee">$22.50</span>
+                    </div>
+                    <div class="border-t border-slate-800 pt-3 flex justify-between items-center font-black text-white text-base">
+                        <span>Total Amount</span>
+                        <span id="summaryTotal" class="text-brand-400 text-xl">$472.50</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer / Checkout Action -->
+            <div class="p-6 border-t border-slate-800 bg-slate-900/95 flex items-center justify-end gap-3">
+                <button onclick="closeModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition">Cancel</button>
+                <button onclick="simulateCheckout()" class="px-8 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-emerald-600 hover:from-brand-600 hover:to-emerald-700 text-white font-bold text-xs shadow-lg shadow-brand-500/25 transition flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-[11px]"></i> Confirm & Pay Securely
+                </button>
+            </div>
+        </div>
     </div>
 
-</div>
+    <!-- Success Confirmation Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-8 text-center shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/40 flex items-center justify-center mx-auto text-2xl mb-5 animate-bounce">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-2xl font-black text-white mb-2">Booking Confirmed!</h3>
+            <p class="text-xs text-slate-400 mb-6">Your tickets have been successfully generated and added to your wallet. Get ready for an unforgettable experience!</p>
+            
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 mb-6 text-left space-y-2 text-xs">
+                <div class="flex justify-between"><span class="text-slate-500">Order ID:</span> <span id="successOrderId" class="font-mono text-white">#AP-89421</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Event:</span> <span id="successEventName" class="font-bold text-white">El Clásico</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Quantity:</span> <span id="successQty" class="text-brand-400 font-bold">2 Tickets</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Total Paid:</span> <span id="successTotal" class="text-white font-bold">$945.00</span></div>
+            </div>
 
+            <div class="flex gap-3">
+                <button onclick="closeSuccessModal(); openMyTickets();" class="flex-1 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs transition shadow-lg shadow-brand-500/25">
+                    View My Tickets
+                </button>
+                <button onclick="closeSuccessModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 
-<!-- FOOTER -->
-<footer>
+    <!-- My Tickets Wallet Modal / Drawer -->
+    <div id="ticketsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-white">My Ticket Wallet</h3>
+                        <p class="text-xs text-slate-400">Digital passes ready for stadium gates</p>
+                    </div>
+                </div>
+                <button onclick="closeMyTickets()" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="ticketsWalletContent" class="p-6 space-y-4">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
 
-    <p>© 2026 MovieTickets | All Rights Reserved</p>
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Mock Sports Events Database
+        const eventsData = [
+            {
+                id: 1,
+                title: "El Clásico: Real Madrid vs FC Barcelona",
+                category: "Football",
+                city: "Madrid",
+                venue: "Santiago Bernabéu, Madrid",
+                date: "May 15, 2026 • 20:00",
+                rawDate: "2026-05-15",
+                price: 180,
+                image: "https://placehold.co/600x400/1e293b/22c55e?text=Real+Madrid+vs+FC+Barcelona",
+                teams: ["Real Madrid", "FC Barcelona"],
+                tiers: [
+                    { name: "VIP Courtside / Pitchside", price: 450, desc: "Direct tunnel view & lounge access" },
+                    { name: "Lower Tier (Longside)", price: 280, desc: "Midfield view, rows 5-15" },
+                    { name: "Upper Tier (Curva)", price: 180, desc: "Atmospheric supporters section" }
+                ]
+            },
+            {
+                id: 2,
+                title: "NBA Finals Game 4: Lakers vs Celtics",
+                category: "Basketball",
+                city: "New York",
+                venue: "Crypto.com Arena, Los Angeles",
+                date: "June 12, 2026 • 19:30",
+                rawDate: "2026-06-12",
+                price: 220,
+                image: "https://placehold.co/600x400/1e293b/3b82f6?text=NBA+Finals+Game+4",
+                teams: ["Los Angeles Lakers", "Boston Celtics"],
+                tiers: [
+                    { name: "VIP Courtside Seats", price: 850, desc: "Floor-level seating beside team benches" },
+                    { name: "Lower Bowl Center", price: 420, desc: "Excellent unobstructed view of court" },
+                    { name: "Upper Concourse", price: 220, desc: "Great overall panoramic arena view" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Monaco Grand Prix 2026 - Race Day",
+                category: "Motorsport",
+                city: "Monaco",
+                venue: "Circuit de Monaco, Monte Carlo",
+                date: "May 24, 2026 • 15:00",
+                rawDate: "2026-05-24",
+                price: 350,
+                image: "https://placehold.co/600x400/1e293b/ef4444?text=Monaco+Grand+Prix",
+                teams: ["Ferrari", "Red Bull Racing", "Mercedes AMG"],
+                tiers: [
+                    { name: "Paddock Club VIP Lounge", price: 1200, desc: "Pit lane walk & gourmet catering" },
+                    { name: "Grandstand K (Harbour View)", price: 650, desc: "Views of Tabac and swimming pool chicane" },
+                    { name: "General Admission (Rock)", price: 350, desc: "Standing area overlooking circuit" }
+                ]
+            },
+            {
+                id: 4,
+                title: "ICC T20 World Cup Final: India vs Australia",
+                category: "Cricket",
+                city: "Melbourne",
+                venue: "Melbourne Cricket Ground (MCG)",
+                date: "November 10, 2026 • 14:30",
+                rawDate: "2026-11-10",
+                price: 150,
+                image: "https://placehold.co/600x400/1e293b/eab308?text=ICC+T20+World+Cup+Final",
+                teams: ["India", "Australia"],
+                tiers: [
+                    { name: "Pavilion VIP Box", price: 500, desc: "Air-conditioned luxury seating & dining" },
+                    { name: "Members Stand (Lower)", price: 310, desc: "Direct sightline behind bowler's arm" },
+                    { name: "General Admission Tier 3", price: 150, desc: "Vibrant stadium atmosphere" }
+                ]
+            },
+            {
+                id: 5,
+                title: "Wimbledon Men's Singles Final",
+                category: "Tennis",
+                city: "London",
+                venue: "All England Lawn Tennis Club, London",
+                date: "July 12, 2026 • 14:00",
+                rawDate: "2026-07-12",
+                price: 300,
+                image: "https://placehold.co/600x400/1e293b/10b981?text=Wimbledon+Mens+Final",
+                teams: ["Top Seeds", "Championship Final"],
+                tiers: [
+                    { name: "Centre Court Royal Box", price: 1500, desc: "Exclusive invitee & VIP hospitality" },
+                    { name: "Centre Court Lower Tier", price: 750, desc: "Close proximity to grass baseline" },
+                    { name: "Court No. 1 Bundle", price: 300, desc: "Prime tournament access" }
+                ]
+            },
+            {
+                id: 6,
+                title: "Premier League: Arsenal vs Manchester City",
+                category: "Football",
+                city: "London",
+                venue: "Emirates Stadium, London",
+                date: "April 28, 2026 • 16:30",
+                rawDate: "2026-04-28",
+                price: 130,
+                image: "https://placehold.co/600x400/1e293b/f97316?text=Arsenal+vs+Man+City",
+                teams: ["Arsenal", "Manchester City"],
+                tiers: [
+                    { name: "Diamond Club Hospitality", price: 600, desc: "Fine dining & luxury padded seats" },
+                    { name: "Lower Tier Longside", price: 240, desc: "Pitch level immersive experience" },
+                    { name: "Clock End Upper Tier", price: 130, desc: "Passionate supporter stand" }
+                ]
+            }
+        ];
 
-</footer>
+        // State variables
+        let currentCategory = 'All';
+        let userTickets = [];
+        let selectedEvent = null;
+        let selectedTierIndex = 0;
+        let ticketQuantity = 1;
 
-
-<script>
-
-    let selectedMovie = "Avengers: Endgame";
-    let selectedTime = "04:30 PM";
-
-    const ticketPrice = 200;
-
-
-    /* Movie selection */
-
-    function selectMovie(movie, name) {
-
-        document.querySelectorAll(".movie").forEach(item => {
-            item.classList.remove("selected");
+        // Initialize App on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEvents(eventsData);
+            updateBadgeCounts();
         });
 
-        movie.classList.add("selected");
+        // Render events cards
+        function renderEvents(data) {
+            const grid = document.getElementById('eventsGrid');
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = '';
 
-        selectedMovie = name;
-
-        document.getElementById("selectedMovie").innerText = name;
-    }
-
-
-    /* Show time selection */
-
-    function selectTime(time) {
-
-        document.querySelectorAll(".time").forEach(item => {
-            item.classList.remove("selected");
-        });
-
-        time.classList.add("selected");
-
-        selectedTime = time.innerText;
-
-        document.getElementById("selectedTime").innerText = selectedTime;
-    }
-
-
-    /* Seat selection */
-
-    document.querySelectorAll(".seat").forEach(seat => {
-
-        seat.addEventListener("click", function() {
-
-            if (this.classList.contains("booked")) {
+            if (data.length === 0) {
+                noResults.classList.remove('hidden');
                 return;
+            } else {
+                noResults.classList.add('hidden');
             }
 
-            this.classList.toggle("selected");
-
-            updateSummary();
-
-        });
-
-    });
-
-
-    /* Update booking summary */
-
-    function updateSummary() {
-
-        const selectedSeats =
-            document.querySelectorAll(".seat.selected");
-
-
-        let seatNames = [];
-
-        selectedSeats.forEach(seat => {
-            seatNames.push(seat.innerText);
-        });
-
-
-        document.getElementById("selectedSeats").innerText =
-            seatNames.length > 0
-                ? seatNames.join(", ")
-                : "None";
-
-
-        document.getElementById("ticketCount").innerText =
-            seatNames.length;
-
-
-        document.getElementById("totalPrice").innerText =
-            seatNames.length * ticketPrice;
-
-    }
-
-
-    /* Book tickets */
-
-    function bookTickets() {
-
-        const city =
-            document.getElementById("city").value;
-
-        const theatre =
-            document.getElementById("theatre").value;
-
-        const date =
-            document.getElementById("date").value;
-
-        const seats =
-            document.querySelectorAll(".seat.selected");
-
-
-        if (!city || !theatre || !date) {
-
-            alert("Please select city, theatre and date.");
-
-            return;
+            data.forEach(event => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden hover:border-slate-700 transition duration-300 flex flex-col group shadow-lg';
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden bg-slate-800">
+                        <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=Sports+Match'">
+                        <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-[11px] font-bold text-brand-400 border border-slate-700/60 uppercase tracking-wider">
+                            ${event.category}
+                        </div>
+                        <div class="absolute top-3 right-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md text-[11px] font-bold text-slate-300 border border-slate-700/60">
+                            <i class="fa-solid fa-location-dot text-brand-400 mr-1"></i> ${event.city}
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-1.5">
+                                <i class="fa-regular fa-calendar text-brand-400"></i> ${event.date}
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-brand-400 transition line-clamp-1">${event.title}</h3>
+                            <div class="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-stadium text-slate-500"></i> ${event.venue}
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] uppercase font-semibold text-slate-400 block">Starting From</span>
+                                <span class="text-xl font-black text-white">$${event.price}</span>
+                            </div>
+                            <button onclick="openCheckoutModal(${event.id})" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 active:scale-95 text-white font-bold text-xs transition shadow-md shadow-brand-500/20 flex items-center gap-2">
+                                <span>Buy Tickets</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         }
 
+        // Filter events by category tab
+        function filterByCategory(category) {
+            currentCategory = category;
+            
+            // Update active state of pills
+            document.querySelectorAll('.category-pill').forEach(pill => {
+                if (pill.textContent.includes(category) || (category === 'All' && pill.textContent.includes('All Sports'))) {
+                    pill.className = 'category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-brand-500 text-white shadow-md shadow-brand-500/20 transition';
+                } else {
+                    pill.className = 'category-pill px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800/80 border border-slate-700 text-slate-300 hover:bg-slate-700 transition';
+                }
+            });
 
-        if (seats.length === 0) {
-
-            alert("Please select at least one seat.");
-
-            return;
+            filterEvents();
         }
 
+        // Combined search, city, and category filter
+        function filterEvents() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const city = document.getElementById('cityFilter').value;
 
-        alert(
-            "Booking Confirmed! 🎉\n\n" +
+            let filtered = eventsData.filter(event => {
+                const matchesCat = currentCategory === 'All' || event.category === currentCategory;
+                const matchesCity = city === 'all' || event.city === city;
+                const matchesQuery = event.title.toLowerCase().includes(query) || event.venue.toLowerCase().includes(query) || event.category.toLowerCase().includes(query);
+                return matchesCat && matchesCity && matchesQuery;
+            });
 
-            "Movie: " + selectedMovie + "\n" +
+            sortEventsArray(filtered);
+            renderEvents(filtered);
+        }
 
-            "Theatre: " + theatre + "\n" +
+        // Sort events
+        function sortEvents() {
+            filterEvents();
+        }
 
-            "City: " + city + "\n" +
+        function sortEventsArray(arr) {
+            const sortBy = document.getElementById('sortBy').value;
+            if (sortBy === 'date') {
+                arr.sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+            } else if (sortBy === 'price-low') {
+                arr.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'price-high') {
+                arr.sort((a, b) => b.price - a.price);
+            }
+        }
 
-            "Date: " + date + "\n" +
+        // Open Checkout Modal
+        function openCheckoutModal(eventId) {
+            selectedEvent = eventsData.find(e => e.id === eventId);
+            if (!selectedEvent) return;
 
-            "Show: " + selectedTime + "\n" +
+            selectedTierIndex = 0;
+            ticketQuantity = 1;
 
-            "Seats: " +
+            document.getElementById('modalCategoryBadge').textContent = selectedEvent.category;
+            document.getElementById('modalEventTitle').textContent = selectedEvent.title;
+            document.getElementById('modalDate').textContent = selectedEvent.date;
+            document.getElementById('modalVenue').textContent = selectedEvent.venue;
 
-            Array.from(seats)
-                .map(seat => seat.innerText)
-                .join(", ") +
+            // Render Tiers
+            const tierContainer = document.getElementById('tierOptions');
+            tierContainer.innerHTML = '';
+            selectedEvent.tiers.forEach((tier, index) => {
+                const isSelected = index === selectedTierIndex;
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border cursor-pointer transition flex items-center justify-between ${isSelected ? 'bg-brand-500/10 border-brand-500' : 'bg-slate-800/40 border-slate-800 hover:bg-slate-800'}`;
+                item.onclick = () => selectTier(index);
+                item.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-5 h-5 rounded-full border-2 ${isSelected ? 'border-brand-500 bg-brand-500 flex items-center justify-center text-white text-[10px]' : 'border-slate-600'}">
+                            ${isSelected ? '<i class="fa-solid fa-check"></i>' : ''}
+                        </div>
+                        <div>
+                            <div class="text-sm font-bold text-white">${tier.name}</div>
+                            <div class="text-xs text-slate-400">${tier.desc}</div>
+                        </div>
+                    </div>
+                    <div class="text-right font-black text-white">$${tier.price}</div>
+                `;
+                tierContainer.appendChild(item);
+            });
 
-            "\n\nTotal: ₹" +
+            updateCalculation();
 
-            seats.length * ticketPrice
-        );
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('modalContainer').classList.remove('scale-95');
+            }, 10);
+        }
 
-    }
+        function selectTier(index) {
+            selectedTierIndex = index;
+            openCheckoutModal(selectedEvent.id); // re-render modal selection state
+        }
 
-</script>
+        function adjustQuantity(change) {
+            ticketQuantity += change;
+            if (ticketQuantity < 1) ticketQuantity = 1;
+            if (ticketQuantity > 8) ticketQuantity = 8;
+            document.getElementById('ticketQuantity').textContent = ticketQuantity;
+            updateCalculation();
+        }
 
+        function updateCalculation() {
+            if (!selectedEvent) return;
+            const tier = selectedEvent.tiers[selectedTierIndex];
+            const base = tier.price * ticketQuantity;
+            const fee = base * 0.05;
+            const total = base + fee;
+
+            document.getElementById('summaryTierName').textContent = tier.name;
+            document.getElementById('summaryQty').textContent = ticketQuantity;
+            document.getElementById('summaryBasePrice').textContent = `$${base.toFixed(2)}`;
+            document.getElementById('summaryFee').textContent = `$${fee.toFixed(2)}`;
+            document.getElementById('summaryTotal').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.add('opacity-0');
+            document.getElementById('modalContainer').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Simulate Checkout
+        function simulateCheckout() {
+            if (!selectedEvent) return;
+            const tier = selectedEvent.tiers[selectedTierIndex];
+            const total = (tier.price * ticketQuantity * 1.05).toFixed(2);
+            const orderId = '#AP-' + Math.floor(10000 + Math.random() * 90000);
+
+            // Save ticket to wallet
+            const newTicket = {
+                orderId: orderId,
+                title: selectedEvent.title,
+                venue: selectedEvent.venue,
+                date: selectedEvent.date,
+                tier: tier.name,
+                qty: ticketQuantity,
+                total: total,
+                qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${orderId}-${selectedEvent.title}`
+            };
+
+            userTickets.unshift(newTicket);
+            updateBadgeCounts();
+
+            closeModal();
+
+            // Populate Success Modal
+            document.getElementById('successOrderId').textContent = orderId;
+            document.getElementById('successEventName').textContent = selectedEvent.title;
+            document.getElementById('successQty').textContent = `${ticketQuantity} Ticket${ticketQuantity > 1 ? 's' : ''}`;
+            document.getElementById('successTotal').textContent = `$${total}`;
+
+            const successModal = document.getElementById('successModal');
+            successModal.classList.remove('hidden');
+            setTimeout(() => {
+                successModal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeSuccessModal() {
+            const successModal = document.getElementById('successModal');
+            successModal.classList.add('opacity-0');
+            setTimeout(() => {
+                successModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // My Tickets Wallet Modal
+        function openMyTickets() {
+            const container = document.getElementById('ticketsWalletContent');
+            container.innerHTML = '';
+
+            if (userTickets.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto text-slate-500 text-2xl mb-4">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                        <h4 class="text-base font-bold text-white mb-1">No Tickets in Wallet</h4>
+                        <p class="text-xs text-slate-400">Book your first sports match to view digital entry passes here.</p>
+                    </div>
+                `;
+            } else {
+                userTickets.forEach(ticket => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-slate-950 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-5 shadow-md';
+                    card.innerHTML = `
+                        <div class="bg-white p-2.5 rounded-xl shrink-0">
+                            <img src="${ticket.qrCode}" alt="QR Code" class="w-24 h-24 object-contain">
+                        </div>
+                        <div class="flex-1 space-y-2 text-center sm:text-left w-full">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/30">${ticket.orderId}</span>
+                                <span class="text-xs text-slate-400"><i class="fa-regular fa-calendar text-brand-400 mr-1"></i> ${ticket.date}</span>
+                            </div>
+                            <h4 class="text-base font-black text-white">${ticket.title}</h4>
+                            <div class="text-xs text-slate-400"><i class="fa-solid fa-location-dot text-brand-400 mr-1"></i> ${ticket.venue}</div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs">
+                                <span class="text-slate-300 font-semibold">${ticket.tier} <span class="text-brand-400">×${ticket.qty}</span></span>
+                                <span class="text-white font-bold">Total: $${ticket.total}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            const modal = document.getElementById('ticketsModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeMyTickets() {
+            const modal = document.getElementById('ticketsModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function updateBadgeCounts() {
+            const count = userTickets.length;
+            document.getElementById('ticketCountBadge').textContent = count;
+            document.getElementById('mobileTicketBadge').textContent = count;
+        }
+
+        // Toggle FAQ Accordions
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            const isOpen = !content.classList.contains('hidden');
+
+            // Close all
+            document.querySelectorAll('#faq .space-y-4 > div > div').forEach(div => div.classList.add('hidden'));
+            document.querySelectorAll('#faq .space-y-4 i.fa-chevron-down').forEach(i => i.style.transform = 'rotate(0deg)');
+
+            if (!isOpen) {
+                content.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Subscribe Newsletter
+        function subscribeNewsletter() {
+            alert('Thank you for subscribing to ArenaPass VIP alerts!');
+        }
+    </script>
 </body>
 </html>
